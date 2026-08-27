@@ -7,13 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
-// This class is responsible for running the console input and output.
-
-// TODO #5
-//  Complete the code below so that your console app is fully functional.
-//  Run the main() method in WeatherDashboardApplication.java to test
-//  your app.
-
 @Component
 public class ConsoleRunner implements CommandLineRunner {
 
@@ -38,16 +31,16 @@ public class ConsoleRunner implements CommandLineRunner {
 
             switch (choice) {
                 case 1:
-                    // TODO #5E: Call checkWeather and pass along "London" and the scanner object
+                    checkWeather("London", scanner);
                     break;
                 case 2:
-                    // TODO #5F: Call checkWeather and pass along "Paris" and the scanner object
+                    checkWeather("Paris", scanner);
                     break;
                 case 3:
-                    // TODO #5G: Call checkWeather and pass along "Tokyo" and the scanner object
+                    checkWeather("Tokyo", scanner);
                     break;
                 case 4:
-                    // TODO #5H: Call checkCustomCity and pass along the scanner object
+                    checkCustomCity(scanner);
                     break;
                 case 5:
                     System.out.println("\nThanks for using Weather Dashboard! ☀️");
@@ -83,10 +76,8 @@ public class ConsoleRunner implements CommandLineRunner {
     private void checkWeather(String city, Scanner scanner) {
         try {
             System.out.println("\n🔍 Fetching weather for " + city + "...");
-            // TODO #5A: Replace null with a call to your weather service method
-            //  and pass along the city.
-            WeatherData weather = null;
-            // TODO #5C: Call displayWeather and pass in the weather object.
+            WeatherData weather = weatherService.getCurrentWeather(city);
+            displayWeather(weather);
         } catch (Exception e) {
             System.out.println("❌ Error getting weather for " + city + ": " + e.getMessage());
         }
@@ -97,7 +88,7 @@ public class ConsoleRunner implements CommandLineRunner {
         System.out.print("\nEnter city name: ");
         String city = scanner.nextLine().trim();
         if (!city.isEmpty()) {
-            // TODO #5D: Call checkWeather and pass along the city and the scanner object
+            checkWeather(city, scanner);
         } else {
             System.out.println("❌ Please enter a valid city name.");
             waitForEnter(scanner);
@@ -105,20 +96,18 @@ public class ConsoleRunner implements CommandLineRunner {
 
     }
 
-    // TODO #5B: Un-comment the method below. Double-check that all the getters for Main,
-    //  Weather, and WeatherData match the ones you defined in those models.
-//    private void displayWeather(WeatherData weather) {
-//        System.out.println("\n️Current Weather in " + weather.getName() + ":");
-//        System.out.println("Temperature: " + weather.getMain().getTemp() + "°C");
-//        System.out.println("Feels like: " + weather.getMain().getFeelsLike() + "°C");
-//        System.out.println("Conditions: " + weather.getWeather()[0].getDescription());
-//        System.out.println("Humidity: " + weather.getMain().getHumidity() + "%");
-//        System.out.println("Pressure: " + weather.getMain().getPressure() + " hPa");
-//
-//        // Add weather emoji based on conditions
-//        String emoji = getWeatherEmoji(weather.getWeather()[0].getMain());
-//        System.out.println("Status: " + emoji + " " + weather.getWeather()[0].getMain());
-//    }
+    private void displayWeather(WeatherData weather) {
+        System.out.println("\n️Current Weather in " + weather.getName() + ":");
+        System.out.println("Temperature: " + weather.getMain().getTemp() + "°C");
+        System.out.println("Feels like: " + weather.getMain().getFeelsLike() + "°C");
+        System.out.println("Conditions: " + weather.getWeather()[0].getDescription());
+        System.out.println("Humidity: " + weather.getMain().getHumidity() + "%");
+        System.out.println("Pressure: " + weather.getMain().getPressure() + " hPa");
+
+        // Add weather emoji based on conditions
+        String emoji = getWeatherEmoji(weather.getWeather()[0].getMain());
+        System.out.println("Status: " + emoji + " " + weather.getWeather()[0].getMain());
+    }
 
     private String getWeatherEmoji(String condition) {
         switch (condition.toLowerCase()) {
